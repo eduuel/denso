@@ -4,38 +4,52 @@ const cors = require("cors");
 
 const app = express();
 
-// Middleware
-app.use(express.json());
-app.use(cors());
-app.use("/api/profit", require("./routes/profitRoutes"));
-/* =========================
-   MongoDB Connection
-========================= */
-mongoose.connect("mongodb+srv://eden21alex_db_user:denso1234@cluster0.jag1l54.mongodb.net/densoDB?appName=Cluster0")
-.then(() => console.log("MongoDB connected"))
-.catch(err => console.log(err));
+// =========================
+// ✅ CORS (UPDATED)
+// =========================
+app.use(cors({
+  origin: "*"
+}));
 
-/* =========================
-   ROUTES (ADD THIS HERE)
-========================= */
+// =========================
+// MIDDLEWARE
+// =========================
+app.use(express.json());
+
+// =========================
+// ROUTES
+// =========================
 const authRoutes = require("./routes/authRoutes");
 const productRoutes = require("./routes/productRoutes");
+const saleRoutes = require("./routes/saleRoutes");
+const profitRoutes = require("./routes/profitRoutes");
 
 app.use("/api", authRoutes);
 app.use("/api", productRoutes);
-const saleRoutes = require("./routes/saleRoutes");
 app.use("/api", saleRoutes);
+app.use("/api/profit", profitRoutes);
 
-/* =========================
-   TEST ROUTE
-========================= */
+// =========================
+// MONGODB CONNECTION
+// =========================
+mongoose.connect(
+  "mongodb+srv://eden21alex_db_user:denso1234@cluster0.jag1l54.mongodb.net/densoDB?appName=Cluster0"
+)
+.then(() => console.log("MongoDB connected"))
+.catch(err => console.log(err));
+
+// =========================
+// TEST ROUTE
+// =========================
 app.get("/", (req, res) => {
   res.send("Denso backend is working 🚀");
 });
 
-/* =========================
-   START SERVER
-========================= */
-app.listen(5000, () => {
-  console.log("Server running on port 5000");
+// =========================
+// ✅ PORT FIX (IMPORTANT FOR DEPLOY)
+// =========================
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on ${PORT}`);
 });

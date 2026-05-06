@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
-
 const Product = require("../models/Product");
+const auth = require("../middleware/authMiddleware");
 
 
 // ============================
-// ADD PRODUCT
+// ➕ ADD PRODUCT (PROTECTED)
 // ============================
-router.post("/products", async (req, res) =>  {
+router.post("/products", auth, async (req, res) => {
   try {
     const { name, price, quantity } = req.body;
 
@@ -25,9 +25,9 @@ router.post("/products", async (req, res) =>  {
 
 
 // ============================
-// GET ALL PRODUCTS
+// 📦 GET ALL PRODUCTS (PROTECTED)
 // ============================
-router.get("/products", async (req, res) => {
+router.get("/products", auth, async (req, res) => {
   try {
     const products = await Product.find();
     res.json(products);
@@ -38,13 +38,11 @@ router.get("/products", async (req, res) => {
 
 
 // ============================
-// DELETE PRODUCT
+// 🗑 DELETE PRODUCT (PROTECTED)
 // ============================
-router.delete("/products/:id", async (req, res) => {
+router.delete("/products/:id", auth, async (req, res) => {
   try {
-    const { id } = req.params;
-
-    await Product.findByIdAndDelete(id);
+    await Product.findByIdAndDelete(req.params.id);
 
     res.json({ message: "Product deleted" });
   } catch (err) {
@@ -52,18 +50,18 @@ router.delete("/products/:id", async (req, res) => {
   }
 });
 
+
 // ============================
-// UPDATE PRODUCT
+// ✏️ UPDATE PRODUCT (PROTECTED)
 // ============================
-router.put("/product/:id", async (req, res) => {
+router.put("/products/:id", auth, async (req, res) => {
   try {
-    const { id } = req.params;
     const { name, price, quantity } = req.body;
 
     const updatedProduct = await Product.findByIdAndUpdate(
-      id,
+      req.params.id,
       { name, price, quantity },
-      { new: true } // return updated data
+      { new: true }
     );
 
     res.json({ message: "Product updated", updatedProduct });
@@ -73,4 +71,7 @@ router.put("/product/:id", async (req, res) => {
 });
 
 
+// ============================
+// EXPORT ROUTER
+// ============================
 module.exports = router;

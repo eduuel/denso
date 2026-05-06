@@ -2,50 +2,95 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
 const mongoose = require("mongoose");
 
-// 🧑 USER MODEL (simple)
+
+// ============================
+// 🧑 USER MODEL
+// ============================
 const User = mongoose.model("User", new mongoose.Schema({
-  email: String,
-  password: String
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  role: { type: String, default: "user" } // 👈 ROLE ADDED
 }));
 
+
+// ============================
 // 🟢 REGISTER
+// ============================
 router.post("/register", async (req, res) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-  const hashed = await bcrypt.hash(password, 10);
+    // check empty input
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password required" });
+    }
 
-  const user = new User({
-    email,
-    password: hashed
-  });
+    // check duplicate user
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
+    }
 
-  await user.save();
+    // hash password
+    const hashed = await bcrypt.hash(password, 10);
 
-  res.json({ message: "User created" });
+    const user = new User({
+      email,
+      password: hashed,
+      role: "admin" // 👈 first user becomes admin (for now)
+    });
+
+    await user.save();
+
+    res.json({ message: "User created successfully" });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
+
+// ============================
 // 🔐 LOGIN
+// ============================
 router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-  const user = await User.findOne({ email });
+    const user = await User.findOne({ email });
 
-  if (!user) {
-    return res.status(400).json({ message: "User not found" });
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: "Wrong password" });
+    }
+
+    // JWT TOKEN (with role)
+    const token = jwt.sign(
+      {
+        id: user._id,
+        email: user.email,
+        role: user.role
+      },
+      "secretkey",
+      { expiresIn: "1d" }
+    );
+
+    res.json({ token });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-
-  const isMatch = await bcrypt.compare(password, user.password);
-
-  if (!isMatch) {
-    return res.status(400).json({ message: "Wrong password" });
-  }
-
-  const token = jwt.sign({ id: user._id }, "secret123");
-
-  res.json({ token });
 });
 
+
+// ============================
+// EXPORT
+// ============================
 module.exports = router;
