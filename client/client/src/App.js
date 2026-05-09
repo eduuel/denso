@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./App.css";
-
+import { API } from "./config";
 const getDate = (s) => new Date(s.createdAt || s.date);
 
 function App() {
@@ -41,36 +41,35 @@ const [invoice, setInvoice] = useState(null);
   // ============================
   // 📦 LOAD DATA
   // ============================
-  const loadProducts = () => {
-    axios.get("http://localhost:5000/api/products", {
-  headers: {
-    Authorization: `Bearer ${token}`
-  }
-})
-    .then(res => setProducts(res.data))
-    .catch(err => console.log(err));
-  };
+const loadProducts = () => {
+  axios.get(`${API}/api/products`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+  .then(res => setProducts(res.data))
+  .catch(err => console.log(err));
+};
 
-  const loadSales = () => {
-   axios.get("http://localhost:5000/api/sales", {
-  headers: {
-    Authorization: `Bearer ${token}`
-  }
-})
-    .then(res => setSales(res.data))
-    .catch(err => console.log(err));
-  };
+const loadSales = () => {
+  axios.get(`${API}/api/sales`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+  .then(res => setSales(res.data))
+  .catch(err => console.log(err));
+};
 
-  const loadProfit = () => {
-    axios.get("http://localhost:5000/api/profit", {
-  headers: {
-    Authorization: `Bearer ${token}`
-  }
-})
-    .then(res => setProfit(res.data.totalProfit))
-    .catch(err => console.log(err));
-  };
-
+const loadProfit = () => {
+  axios.get(`${API}/api/profit`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+  .then(res => setProfit(res.data.totalProfit))
+  .catch(err => console.log(err));
+};
 
   // ============================
   // 🔄 AUTO LOAD
@@ -89,30 +88,30 @@ useEffect(() => {
   // ============================
   // 🔐 LOGIN
   // ============================
-  const login = () => {
-    axios.post("http://localhost:5000/api/login", {
-      email,
-      password
-    })
-    .then(res => {
-      localStorage.setItem("token", res.data.token);
-      setToken(res.data.token);
-    })
-    .catch(err => console.log(err));
-  };
+ const login = () => {
+  axios.post(`${API}/api/login`, {
+    email,
+    password
+  })
+  .then(res => {
+    localStorage.setItem("token", res.data.token);
+    setToken(res.data.token);
+  })
+  .catch(err => console.log(err));
+};
 
 
   // ============================
   // 📝 REGISTER
   // ============================
-  const register = () => {
-    axios.post("http://localhost:5000/api/register", {
-      email,
-      password
-    })
-    .then(() => alert("User registered"))
-    .catch(err => console.log(err));
-  };
+const register = () => {
+  axios.post(`${API}/api/register`, {
+    email,
+    password
+  })
+  .then(() => alert("User registered"))
+  .catch(err => console.log(err));
+};
 
 
   // ============================
@@ -128,16 +127,16 @@ useEffect(() => {
   // ============================
   // ➕ ADD PRODUCT (ADMIN)
   // ============================
-  const addProduct = () => {
-   axios.post("http://localhost:5000/api/products", {
-  name,
-  price: Number(price),
-  quantity: Number(quantity)
-}, {
-  headers: {
-    Authorization: `Bearer ${token}`
-  }
-})
+const addProduct = () => {
+  axios.post(`${API}/api/products`, {
+    name,
+    price: Number(price),
+    quantity: Number(quantity)
+  }, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
     .then(() => {
       setName("");
       setPrice("");
@@ -145,22 +144,21 @@ useEffect(() => {
       loadProducts();
     })
     .catch(err => console.log(err));
-  };
+};
 
 
   // ============================
   // 🗑 DELETE
   // ============================
   const deleteProduct = (id) => {
-    axios.delete(`http://localhost:5000/api/products/${id}`, {
-  headers: {
-    Authorization: `Bearer ${token}`
-  }
-})
+  axios.delete(`${API}/api/products/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
     .then(() => loadProducts())
     .catch(err => console.log(err));
-  };
-
+};
 
   // ============================
   // 💸 SELL
@@ -172,7 +170,7 @@ const sellingPrice = prompt("Price:");
 
 if (!customerName || !quantitySold || !sellingPrice) return;
 
- axios.post("http://localhost:5000/api/sell", {
+axios.post(`${API}/api/sell`, {
   productId: id,
   quantitySold: Number(quantitySold),
   sellingPrice: Number(sellingPrice)
