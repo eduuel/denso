@@ -215,9 +215,11 @@ const monthlySales = sales.filter(s => {
 });
 
 // 💰 TOTALS
-const dailyTotal = dailySales.reduce((a, b) => a + b.profit, 0);
-const weeklyTotal = weeklySales.reduce((a, b) => a + b.profit, 0);
-const monthlyTotal = monthlySales.reduce((a, b) => a + b.profit, 0);
+const dailyTotal = dailySales.reduce((a, b) => a + Number(b.profit || 0), 0);
+
+const weeklyTotal = weeklySales.reduce((a, b) => a + Number(b.profit || 0), 0);
+
+const monthlyTotal = monthlySales.reduce((a, b) => a + Number(b.profit || 0), 0);
 const lowStock = products.filter(p => p.quantity <= 5);
 // 📊 SIMPLE CHART DATA (SAFE)
 const grouped = {};
@@ -255,9 +257,194 @@ const inputGroup = {
   gap: 10,
   marginBottom: 10
 };
- return (
-  <div>
-    <h1>Denso Tracker Working</h1>
+if (!Array.isArray(products) || !Array.isArray(sales)) {
+  return <div>Loading...</div>;
+}
+  return (
+    <div style={{
+    padding: 20,
+    fontFamily: "Arial",
+    background: "#f4f6f9",
+    minHeight: "100vh"
+  }}>
+
+    {/* 🚗 HEADER */}
+    <h1 style={{
+      textAlign: "center",
+      marginBottom: 20
+    }}>
+      🚗 Denso Tracker
+    </h1>
+
+    {/* 🔐 LOGIN */}
+    {!token && (
+      <div style={cardStyle}>
+        <h2 style={{ textAlign: "center" }}>Login</h2>
+
+        <div style={inputGroup}>
+          <input placeholder="Email" value={email}
+            onChange={e => setEmail(e.target.value)} />
+
+          <input placeholder="Password" type="password" value={password}
+            onChange={e => setPassword(e.target.value)} />
+        </div>
+
+        <div style={{ textAlign: "center" }}>
+          <button onClick={login}>Login</button>
+          <button onClick={register}>Register</button>
+        </div>
+      </div>
+    )}
+
+    {/* 🟢 DASHBOARD */}
+    {token && (
+      <>
+        <div style={{ textAlign: "right" }}>
+          <button onClick={logout}>Logout 🚪</button>
+        </div>
+
+        {/* 👤 ROLE */}
+        <div style={cardStyle}>
+          <h3>👤 Role: {role}</h3>
+          <h2 style={{ color: "green" }}>
+            💰 Total Profit: {profit} Birr
+          </h2>
+
+          {role !== "admin" && (
+            <p style={{ color: "orange" }}>
+              ⚠ View Only Mode
+            </p>
+          )}
+        </div>
+
+        {/* 📅 SALES OVERVIEW */}
+        <div style={cardStyle}>
+          <h2>📅 Sales Overview</h2>
+
+          <div style={{ display: "flex", gap: 10 }}>
+            <div style={miniCard}>📆 Today: {dailyTotal}</div>
+            <div style={miniCard}>📅 Week: {weeklyTotal}</div>
+            <div style={miniCard}>🗓 Month: {monthlyTotal}</div>
+          </div>
+        </div>
+{/* 📈 CHART */}
+<div style={cardStyle}>
+  <h2>📈 Profit Chart</h2>
+
+  {chartData.length === 0 ? (
+    <p>No data yet</p>
+  ) : (
+    <div style={{
+      display: "flex",
+      alignItems: "flex-end",
+      gap: 10,
+      height: 200
+    }}>
+      {chartData?.map((c, i) => (
+        <div key={i} style={{ textAlign: "center" }}>
+          
+          <div style={{
+            width: 30,
+           height: Math.max(Number(c.profit || 0) / 10, 10),
+            backgroundColor: "#4CAF50",
+            borderRadius: 4
+          }}></div>
+
+          <small>{c.date}</small>
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+        {/* ⚠ LOW STOCK */}
+        <div style={cardStyle}>
+          <h2>⚠ Low Stock Alerts</h2>
+
+          {lowStock.length === 0 ? (
+            <p>All stock is healthy 👍</p>
+          ) : (
+            lowStock.map(p => (
+              <p key={p._id} style={{ color: "red" }}>
+                ⚠ {p.name} ({p.quantity} left)
+              </p>
+            ))
+          )}
+        </div>
+
+        {/* ➕ ADD PRODUCT */}
+        <div style={cardStyle}>
+          <h2>➕ Add Product</h2>
+
+          {role === "admin" ? (
+            <>
+              <div style={inputGroup}>
+                <input placeholder="Name" value={name}
+                  onChange={e => setName(e.target.value)} />
+
+                <input placeholder="Price" value={price}
+                  onChange={e => setPrice(e.target.value)} />
+
+                <input placeholder="Quantity" value={quantity}
+                  onChange={e => setQuantity(e.target.value)} />
+              </div>
+
+              <button onClick={addProduct}>Add</button>
+            </>
+          ) : (
+            <p>🔒 Admin only can add products</p>
+          )}
+        </div>
+{/* 🧾 INVOICE */}
+{invoice && (
+  <div style={{
+    background: "white",
+    padding: 20,
+    marginTop: 20,
+    border: "2px solid black"
+  }}>
+    <h2>🧾 Invoice</h2>
+
+    <p><strong>Customer:</strong> {invoice.customerName}</p>
+    <p><strong>Quantity:</strong> {invoice.quantitySold}</p>
+    <p><strong>Price:</strong> {invoice.sellingPrice}</p>
+    <p><strong>Total:</strong> {invoice.total} Birr</p>
+    <p><strong>Date:</strong> {invoice.date}</p>
+
+    <button onClick={() => window.print()}>
+      🖨 Print Invoice
+    </button>
+  </div>
+)}
+        {/* 📊 SALES */}
+        <h2>📊 Sales History</h2>
+        {sales?.map(s => (
+          <div key={s._id} style={cardStyle}>
+            <p>📦 {s.productName}</p>
+            <p>🔢 Qty: {s.quantitySold}</p>
+            <p>💰 Profit: {s.profit}</p>
+          </div>
+        ))}
+
+        {/* 📦 PRODUCTS */}
+        <h2>📦 Products</h2>
+        {products?.map(p => (
+          <div key={p._id} style={cardStyle}>
+            <h3>{p.name}</h3>
+            <p>💰 {p.price}</p>
+            <p>📦 {p.quantity}</p>
+
+            {role === "admin" ? (
+              <>
+                <button onClick={() => sellProduct(p._id)}>Sell</button>
+                <button onClick={() => deleteProduct(p._id)}>Delete</button>
+              </>
+            ) : (
+              <p style={{ fontSize: 12 }}>🔒 Locked</p>
+            )}
+          </div>
+        ))}
+      </>
+    )}
   </div>
 );
   ;
