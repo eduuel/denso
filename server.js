@@ -1,3 +1,4 @@
+require("dotenv").config(); // Load environment variables
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -22,19 +23,15 @@ app.use(express.json());
 const authRoutes = require("./routes/authRoutes");
 const productRoutes = require("./routes/productRoutes");
 const saleRoutes = require("./routes/saleRoutes");
-const profitRoutes = require("./routes/profitRoutes");
 
 app.use("/api", authRoutes);
 app.use("/api", productRoutes);
 app.use("/api", saleRoutes);
-app.use("/api/profit", profitRoutes);
 
 // =========================
 // MONGODB CONNECTION
 // =========================
-mongoose.connect(
-  "mongodb+srv://eden21alex_db_user:denso1234@cluster0.jag1l54.mongodb.net/densoDB?appName=Cluster0"
-)
+mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log("MongoDB connected"))
 .catch(err => console.log(err));
 

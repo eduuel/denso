@@ -5,7 +5,7 @@ const authMiddleware = (req, res, next) => {
 
   // 🚨 No token provided
   if (!authHeader) {
-    return res.status(401).json({ message: "No token, access denied" });
+    return res.status(401).json({ error: "No token, access denied" });
   }
 
   try {
@@ -13,21 +13,23 @@ const authMiddleware = (req, res, next) => {
     const token = authHeader.split(" ")[1];
 
     if (!token) {
-      return res.status(401).json({ message: "Token format invalid" });
+      return res.status(401).json({ error: "Token format invalid" });
     }
 
     // 🔐 Verify token
-    const verified = jwt.verify(token, "secretkey");
+    const verified = jwt.verify(token, process.env.JWT_SECRET);
 
     // 📦 Attach user info to request
     req.user = verified; 
-    // req.user now contains:
-    // { id, email, role, iat, exp }
+    // req.user now contains: { id, email, role, iat, exp }
 
     next();
 
   } catch (err) {
-    res.status(401).json({ message: "Invalid or expired token" });
+    if (err.name === "TokenExpiredError") {
+      return res.status(401).json({ error: "Token expired. Please log in again." });
+    }
+    res.status(401).json({ error: "Invalid token" });
   }
 };
 

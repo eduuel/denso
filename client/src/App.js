@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
 import SalesHistory from "./pages/SalesHistory";
+import InvoiceModal from "./components/InvoiceModal";
 
 const getDate = (s) => new Date(s.createdAt || s.date);
 
@@ -23,6 +24,7 @@ function App() {
   const [products, setProducts] = useState([]);
   const [sales, setSales] = useState([]);
   const [profit, setProfit] = useState(0);
+  const [latestInvoice, setLatestInvoice] = useState(null);
 
   // ============================
   // 🔐 GET ROLE FROM TOKEN
@@ -126,12 +128,17 @@ function App() {
       productId: id,
       ...sellData
     }, { headers: { Authorization: `Bearer ${token}` } })
-      .then(() => {
+      .then((res) => {
         loadProducts();
         loadSales();
         loadProfit();
+        // Show invoice immediately after sale
+        setLatestInvoice({
+          ...res.data.sale,
+          customerName: sellData.customerName // inject frontend-only customer name
+        });
       })
-      .catch(err => console.log(err));
+      .catch(err => alert(err.response?.data?.error || "Sale failed"));
   };
 
   // ============================
@@ -163,6 +170,13 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
+      
+      {/* 🧾 GLOBAL INVOICE MODAL FOR IMMEDIATE SALES */}
+      <InvoiceModal 
+        isOpen={!!latestInvoice} 
+        onClose={() => setLatestInvoice(null)} 
+        invoiceData={latestInvoice} 
+      />
     </BrowserRouter>
   );
 }
