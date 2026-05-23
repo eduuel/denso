@@ -12,7 +12,8 @@ import Products from "./pages/Products";
 import SalesHistory from "./pages/SalesHistory";
 import InvoiceModal from "./components/InvoiceModal";
 
-const getDate = (s) => new Date(s.createdAt || s.date);
+// NOTE: getDate was previously defined but is no longer used. Keeping it for potential future utilities.
+// const getDate = (s) => new Date(s.createdAt || s.date);
 
 function App() {
   // 🔐 AUTH STATE
