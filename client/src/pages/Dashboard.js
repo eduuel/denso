@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import StatCard from '../components/StatCard';
 import ChartComponent from '../components/ChartComponent';
-import { Package, ShoppingCart, DollarSign, AlertTriangle } from 'lucide-react';
+import { Package, DollarSign, AlertTriangle } from 'lucide-react';
 
 const Dashboard = ({ products = [], sales = [], profit = 0 }) => {
   // Safe Date parsing
