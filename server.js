@@ -9,7 +9,7 @@ const app = express();
 // ✅ CORS (UPDATED)
 // =========================
 app.use(cors({
-  origin: "*"
+  origin: process.env.NETLIFY_URL || "*"
 }));
 
 // =========================
