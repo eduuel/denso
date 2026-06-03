@@ -1,0 +1,80 @@
+{
+  "sidebar": {
+    "dashboard": "ዳሽቦርድ",
+    "products": "ምርቶች",
+    "salesHistory": "የሽያጭ ታሪክ",
+    "users": "ተጠቃሚዎች",
+    "logout": "ውጣ"
+  },
+  "dashboard": {
+    "overview": "የዳሽቦርድ አጠቃላይ እይታ",
+    "totalProfit": "አጠቃላይ ትርፍ",
+    "todayProfit": "የዛሬ ትርፍ",
+    "totalProducts": "አጠቃላይ ምርቶች",
+    "lowStock": "የአነስተኛ ክምችት ማስጠንቀቂያ",
+    "requiresAttention": "ትኩረት ይፈልጋል",
+    "healthy": "ሁሉም ክምችት በጥሩ ሁኔታ ላይ ነው",
+    "revenueVsProfit": "ገቢ እና ትርፍ (ያለፉት 7 ቀናት)",
+    "quickSummary": "ፈጣን ማጠቃለያ",
+    "weeklyProfit": "ሳምንታዊ ትርፍ",
+    "monthlyProfit": "ወርሃዊ ትርፍ",
+    "totalSales": "አጠቃላይ የሽያጭ ግብይቶች",
+    "notEnoughData": "ገበታውን ለማሳየት በቂ መረጃ የለም"
+  },
+  "products": {
+    "title": "የእቃ ምርቶች",
+    "addProduct": "አዲስ ምርት ጨምር",
+    "search": "ምርቶችን ይፈልጉ...",
+    "allCategories": "ሁሉም ምድቦች",
+    "name": "የምርት ስም",
+    "category": "ምድብ",
+    "price": "ዋጋ",
+    "quantity": "ብዛት",
+    "status": "ሁኔታ",
+    "actions": "ድርጊቶች",
+    "inStock": "በክምችት አለ",
+    "lowStock": "አነስተኛ ክምችት",
+    "outOfStock": "አልቋል",
+    "edit": "አስተካክል",
+    "sell": "ሽጥ",
+    "delete": "ሰርዝ",
+    "noProducts": "ምንም ምርቶች አልተገኙም። ፍለጋዎን ያስተካክሉ ወይም አዲስ ምርት ያክሉ።",
+    "addSuccess": "ምርት በተሳካ ሁኔታ ታክሏል",
+    "editSuccess": "ምርት በተሳካ ሁኔታ ተሻሽሏል",
+    "deleteSuccess": "ምርት በተሳካ ሁኔታ ተሰርዟል"
+  },
+  "sales": {
+    "title": "የሽያጭ ታሪክ",
+    "dateRange": "የቀን ክልል፡ ሁሉም ጊዜ",
+    "today": "ዛሬ",
+    "last7Days": "ያለፉት 7 ቀናት",
+    "last30Days": "ያለፉት 30 ቀናት",
+    "product": "ምርት",
+    "soldTo": "የተሸጠለት",
+    "qty": "ብዛት",
+    "amount": "አጠቃላይ ዋጋ",
+    "profit": "ትርፍ",
+    "date": "ቀን",
+    "noSales": "ምንም የሽያጭ መዝገቦች አልተገኙም።",
+    "cashier": "ገንዘብ ተቀባይ"
+  },
+  "users": {
+    "title": "የተጠቃሚ አስተዳደር",
+    "refresh": "አድስ",
+    "user": "ተጠቃሚ",
+    "role": "ሚና",
+    "joined": "የተቀላቀለበት",
+    "actions": "ድርጊቶች",
+    "promote": "አሳድግ",
+    "demote": "ዝቅ አድርግ",
+    "delete": "ሰርዝ",
+    "cannotDeleteSelf": "ራስን መሰረዝ አይቻልም",
+    "noUsers": "ምንም ተጠቃሚዎች አልተገኙም።",
+    "accessDenied": "ክልክል ነው",
+    "adminRequired": "ይህንን ገጽ ለማየት የአስተዳዳሪ መብቶች ያስፈልጋሉ።"
+  },
+  "navbar": {
+    "admin": "አስተዳዳሪ",
+    "viewOnly": "እይታ ብቻ"
+  }
+}

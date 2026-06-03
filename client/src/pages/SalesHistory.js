@@ -3,8 +3,10 @@ import DataTable from '../components/DataTable';
 import InvoiceModal from '../components/InvoiceModal';
 import { Search, FileText, DollarSign, Activity } from 'lucide-react';
 import StatCard from '../components/StatCard';
+import { useTranslation } from 'react-i18next';
 
 const SalesHistory = ({ sales = [] }) => {
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [dateFilter, setDateFilter] = useState('all'); // 'all', 'today', 'week', 'month'
   
@@ -63,19 +65,19 @@ const SalesHistory = ({ sales = [] }) => {
   const columns = [
     { 
       field: 'date', 
-      header: 'Date',
+      header: t("sales.date"),
       render: (row) => getDate(row).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
     },
-    { field: 'productName', header: 'Product Name' },
-    { field: 'quantitySold', header: 'Qty' },
+    { field: 'productName', header: t("sales.product") },
+    { field: 'quantitySold', header: t("sales.qty") },
     { 
       field: 'sellingPrice', 
-      header: 'Price',
+      header: t("products.price"),
       render: (row) => `${Number(row.sellingPrice).toLocaleString()} Birr`
     },
     { 
       field: 'totalAmount', 
-      header: 'Total Revenue',
+      header: t("sales.amount"),
       render: (row) => {
         const total = Number(row.totalAmount || (row.quantitySold * row.sellingPrice) || 0);
         return <span style={{ fontWeight: '500' }}>{total.toLocaleString()} Birr</span>;
@@ -83,7 +85,7 @@ const SalesHistory = ({ sales = [] }) => {
     },
     { 
       field: 'profit', 
-      header: 'Profit',
+      header: t("sales.profit"),
       render: (row) => <span style={{ color: 'var(--success-color)', fontWeight: '500' }}>+{Number(row.profit || 0).toLocaleString()} Birr</span>
     },
     {
@@ -105,7 +107,7 @@ const SalesHistory = ({ sales = [] }) => {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">Sales History</h1>
+        <h1 className="page-title">{t("sales.title")}</h1>
       </div>
 
       {/* 🚀 STAT CARDS (Reflects Filtered Data) */}
@@ -136,7 +138,7 @@ const SalesHistory = ({ sales = [] }) => {
           <Search size={20} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
           <input 
             type="text" 
-            placeholder="Search by product name..." 
+            placeholder={t("products.search")} 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             style={{ width: '100%', padding: '0.75rem 1rem 0.75rem 2.5rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
@@ -147,10 +149,10 @@ const SalesHistory = ({ sales = [] }) => {
           onChange={(e) => setDateFilter(e.target.value)}
           style={{ padding: '0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
         >
-          <option value="all">All Time</option>
-          <option value="today">Today</option>
-          <option value="week">Last 7 Days</option>
-          <option value="month">This Month</option>
+          <option value="all">{t("sales.dateRange")}</option>
+          <option value="today">{t("sales.today")}</option>
+          <option value="week">{t("sales.last7Days")}</option>
+          <option value="month">{t("sales.last30Days")}</option>
         </select>
       </div>
 
@@ -160,7 +162,7 @@ const SalesHistory = ({ sales = [] }) => {
           columns={columns} 
           data={filteredSales} 
           keyField="_id"
-          emptyMessage={sales.length === 0 ? "No sales recorded yet." : "No sales match your search/filter criteria."}
+          emptyMessage={sales.length === 0 ? t("sales.noSales") : t("sales.noSales")}
         />
       </div>
 

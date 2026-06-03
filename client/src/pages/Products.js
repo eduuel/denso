@@ -2,8 +2,10 @@ import React, { useState, useMemo } from 'react';
 import DataTable from '../components/DataTable';
 import ProductModal from '../components/ProductModal';
 import { Search, Plus, Edit2, Trash2, ShoppingBag } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const Products = ({ products = [], role, onAdd, onEdit, onDelete, onSell }) => {
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all'); // 'all', 'low-stock', 'in-stock'
   
@@ -78,15 +80,15 @@ const Products = ({ products = [], role, onAdd, onEdit, onDelete, onSell }) => {
   // 📊 TABLE COLUMNS
   // ============================
   const columns = [
-    { field: 'name', header: 'Product Name' },
+    { field: 'name', header: t("products.name") },
     { 
       field: 'price', 
-      header: 'Price',
+      header: t("products.price"),
       render: (row) => `${row.price.toLocaleString()} Birr`
     },
     { 
       field: 'quantity', 
-      header: 'Stock',
+      header: t("products.quantity"),
       render: (row) => (
         <span style={{ color: row.quantity <= 5 ? 'var(--danger-color)' : 'inherit', fontWeight: row.quantity <= 5 ? 'bold' : 'normal' }}>
           {row.quantity} {row.quantity <= 5 && '⚠'}
@@ -95,27 +97,27 @@ const Products = ({ products = [], role, onAdd, onEdit, onDelete, onSell }) => {
     },
     {
       field: 'actions',
-      header: 'Actions',
+      header: t("products.actions"),
       render: (row) => (
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           {role === 'admin' ? (
             <>
-              <button className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }} onClick={() => handleSellClick(row._id)} title="Sell">
+              <button className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }} onClick={() => handleSellClick(row._id)} title={t("products.sell")}>
                 <ShoppingBag size={16} />
               </button>
-              <button className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }} onClick={() => handleOpenEdit(row)} title="Edit">
+              <button className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }} onClick={() => handleOpenEdit(row)} title={t("products.edit")}>
                 <Edit2 size={16} />
               </button>
               <button className="btn btn-danger" style={{ padding: '0.25rem 0.5rem' }} onClick={() => {
                 if (window.confirm('Are you sure you want to delete this product?')) {
                   onDelete(row._id);
                 }
-              }} title="Delete">
+              }} title={t("products.delete")}>
                 <Trash2 size={16} />
               </button>
             </>
           ) : (
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>🔒 View Only</span>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>🔒 {t("navbar.viewOnly")}</span>
           )}
         </div>
       )
@@ -125,10 +127,10 @@ const Products = ({ products = [], role, onAdd, onEdit, onDelete, onSell }) => {
   return (
     <div>
       <div className="page-header" style={{ flexWrap: 'wrap', gap: '1rem' }}>
-        <h1 className="page-title">Inventory Management</h1>
+        <h1 className="page-title">{t("products.title")}</h1>
         {role === 'admin' && (
           <button className="btn btn-primary" onClick={handleOpenAdd}>
-            <Plus size={20} /> Add Product
+            <Plus size={20} /> {t("products.addProduct")}
           </button>
         )}
       </div>
@@ -139,7 +141,7 @@ const Products = ({ products = [], role, onAdd, onEdit, onDelete, onSell }) => {
           <Search size={20} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
           <input 
             type="text" 
-            placeholder="Search products..." 
+            placeholder={t("products.search")} 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             style={{ width: '100%', padding: '0.75rem 1rem 0.75rem 2.5rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
@@ -150,9 +152,9 @@ const Products = ({ products = [], role, onAdd, onEdit, onDelete, onSell }) => {
           onChange={(e) => setFilterType(e.target.value)}
           style={{ padding: '0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
         >
-          <option value="all">All Products</option>
-          <option value="in-stock">In Stock (&gt;5)</option>
-          <option value="low-stock">Low Stock (≤5)</option>
+          <option value="all">{t("products.allCategories")}</option>
+          <option value="in-stock">{t("products.inStock")} (&gt;5)</option>
+          <option value="low-stock">{t("products.lowStock")} (≤5)</option>
         </select>
       </div>
 
@@ -162,7 +164,7 @@ const Products = ({ products = [], role, onAdd, onEdit, onDelete, onSell }) => {
           columns={columns} 
           data={filteredProducts} 
           keyField="_id"
-          emptyMessage={products.length === 0 ? "No products found. Add one to get started." : "No products match your search/filter criteria."}
+          emptyMessage={products.length === 0 ? t("products.noProducts") : t("products.noProducts")}
         />
       </div>
 

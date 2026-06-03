@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { API } from "../config";
 import { Shield, ShieldOff, Trash2, RefreshCw, AlertCircle, Users as UsersIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const Users = ({ token, role: currentUserRole }) => {
+  const { t } = useTranslation();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -106,8 +108,8 @@ const Users = ({ token, role: currentUserRole }) => {
     return (
       <div style={styles.accessDenied}>
         <AlertCircle size={48} style={{ color: "var(--danger-color)", marginBottom: "1rem" }} />
-        <h2 style={{ margin: 0, marginBottom: "0.5rem" }}>Access Denied</h2>
-        <p style={{ color: "var(--text-secondary)", margin: 0 }}>Admin privileges required to view this page.</p>
+        <h2 style={{ margin: 0, marginBottom: "0.5rem" }}>{t("users.accessDenied")}</h2>
+        <p style={{ color: "var(--text-secondary)", margin: 0 }}>{t("users.adminRequired")}</p>
       </div>
     );
   }
@@ -149,12 +151,12 @@ const Users = ({ token, role: currentUserRole }) => {
       <div className="page-header">
         <h1 className="page-title" style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
           <UsersIcon size={28} />
-          User Management
+          {t("users.title")}
         </h1>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <span style={styles.userCount}>{users.length} user{users.length !== 1 ? "s" : ""}</span>
+          <span style={styles.userCount}>{users.length} {t("users.user")}{users.length !== 1 ? "s" : ""}</span>
           <button onClick={fetchUsers} className="btn btn-outline" style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-            <RefreshCw size={16} /> Refresh
+            <RefreshCw size={16} /> {t("users.refresh")}
           </button>
         </div>
       </div>
@@ -171,10 +173,10 @@ const Users = ({ token, role: currentUserRole }) => {
         <table style={styles.table}>
           <thead>
             <tr>
-              <th style={styles.th}>User</th>
-              <th style={styles.th}>Role</th>
-              <th style={styles.th}>Joined</th>
-              <th style={{ ...styles.th, textAlign: "right" }}>Actions</th>
+              <th style={styles.th}>{t("users.user")}</th>
+              <th style={styles.th}>{t("users.role")}</th>
+              <th style={styles.th}>{t("users.joined")}</th>
+              <th style={{ ...styles.th, textAlign: "right" }}>{t("users.actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -235,10 +237,10 @@ const Users = ({ token, role: currentUserRole }) => {
                         disabled={isBeingActioned}
                         className="btn btn-outline"
                         style={{ fontSize: "0.8rem", padding: "0.4rem 0.75rem" }}
-                        title={user.role === "admin" ? "Demote to User" : "Promote to Admin"}
+                        title={user.role === "admin" ? t("users.demote") : t("users.promote")}
                       >
                         {user.role === "admin" ? <ShieldOff size={14} /> : <Shield size={14} />}
-                        {user.role === "admin" ? "Demote" : "Promote"}
+                        {user.role === "admin" ? t("users.demote") : t("users.promote")}
                       </button>
 
                       {/* Delete Button — hidden for current user */}
@@ -248,17 +250,17 @@ const Users = ({ token, role: currentUserRole }) => {
                           disabled={isBeingActioned}
                           className="btn btn-danger"
                           style={{ fontSize: "0.8rem", padding: "0.4rem 0.75rem" }}
-                          title="Delete User"
+                          title={t("users.delete")}
                         >
                           <Trash2 size={14} />
-                          Delete
+                          {t("users.delete")}
                         </button>
                       )}
 
                       {/* Self indicator */}
                       {isCurrentUser && (
                         <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", alignSelf: "center" }}>
-                          (Cannot delete self)
+                          ({t("users.cannotDeleteSelf")})
                         </span>
                       )}
                     </div>
@@ -271,7 +273,7 @@ const Users = ({ token, role: currentUserRole }) => {
 
         {users.length === 0 && (
           <div style={{ textAlign: "center", padding: "3rem", color: "var(--text-muted)" }}>
-            No users found.
+            {t("users.noUsers")}
           </div>
         )}
       </div>

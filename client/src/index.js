@@ -4,6 +4,7 @@ import './index.css';
 import './styles/variables.css';
 import './styles/layout.css';
 import App from './App';
+import './i18n';
 import reportWebVitals from './reportWebVitals';
 import { ThemeProvider } from './context/ThemeContext';
 

@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   LayoutDashboard,
   Package,
@@ -9,6 +10,7 @@ import {
 } from "lucide-react";
 
 const Sidebar = ({ role, onLogout }) => {
+  const { t } = useTranslation();
 
   return (
     <aside className="sidebar">
@@ -25,7 +27,7 @@ const Sidebar = ({ role, onLogout }) => {
           }
         >
           <LayoutDashboard className="nav-icon" />
-          <span>Dashboard</span>
+          <span>{t("sidebar.dashboard")}</span>
         </NavLink>
 
         <NavLink
@@ -35,7 +37,7 @@ const Sidebar = ({ role, onLogout }) => {
           }
         >
           <Package className="nav-icon" />
-          <span>Products</span>
+          <span>{t("sidebar.products")}</span>
         </NavLink>
 
         <NavLink
@@ -45,7 +47,7 @@ const Sidebar = ({ role, onLogout }) => {
           }
         >
           <ShoppingCart className="nav-icon" />
-          <span>Sales History</span>
+          <span>{t("sidebar.salesHistory")}</span>
         </NavLink>
 
         {/* ADMIN ONLY */}
@@ -57,7 +59,7 @@ const Sidebar = ({ role, onLogout }) => {
             }
           >
             <Users className="nav-icon" />
-            <span>Users</span>
+            <span>{t("sidebar.users")}</span>
           </NavLink>
         )}
       </nav>
@@ -78,7 +80,7 @@ const Sidebar = ({ role, onLogout }) => {
           }}
         >
           <LogOut className="nav-icon" />
-          <span>Logout</span>
+          <span>{t("sidebar.logout")}</span>
         </button>
       </div>
     </aside>

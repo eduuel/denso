@@ -2,8 +2,10 @@ import React, { useMemo } from 'react';
 import StatCard from '../components/StatCard';
 import ChartComponent from '../components/ChartComponent';
 import { Package, DollarSign, AlertTriangle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const Dashboard = ({ products = [], sales = [], profit = 0 }) => {
+  const { t } = useTranslation();
   // Safe Date parsing
   const getDate = (s) => new Date(s.createdAt || s.date);
   
@@ -93,65 +95,65 @@ const Dashboard = ({ products = [], sales = [], profit = 0 }) => {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">Dashboard Overview</h1>
+        <h1 className="page-title">{t("dashboard.overview")}</h1>
       </div>
 
       {/* 🚀 STAT CARDS GRID */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
         <StatCard 
-          title="Total Profit (All Time)" 
+          title={t("dashboard.totalProfit")} 
           value={`${profit.toLocaleString()} Birr`} 
           icon={<DollarSign size={24} />} 
           color="var(--success-color)"
         />
         <StatCard 
-          title="Today's Profit" 
+          title={t("dashboard.todayProfit")} 
           value={`${stats.dailyProfit.toLocaleString()} Birr`} 
           icon={<DollarSign size={24} />} 
           color="var(--primary-color)"
           trend={12} // Mock trend for UI
         />
         <StatCard 
-          title="Total Products" 
+          title={t("dashboard.totalProducts")} 
           value={stats.totalProductsCount} 
           icon={<Package size={24} />} 
           color="var(--info-color)"
         />
         <StatCard 
-          title="Low Stock Alerts" 
+          title={t("dashboard.lowStock")} 
           value={stats.lowStockCount} 
           icon={<AlertTriangle size={24} />} 
           color={stats.lowStockCount > 0 ? "var(--danger-color)" : "var(--success-color)"}
-          trendLabel={stats.lowStockCount > 0 ? 'Requires attention' : 'All stock healthy'}
+          trendLabel={stats.lowStockCount > 0 ? t("dashboard.requiresAttention") : t("dashboard.healthy")}
         />
       </div>
 
       {/* 📈 CHARTS & ANALYTICS */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
         <div className="card" style={{ padding: '1.5rem', height: '400px' }}>
-          <h2 style={{ fontSize: '1.125rem', marginBottom: '1rem' }}>Revenue vs Profit (Last 7 Days)</h2>
+          <h2 style={{ fontSize: '1.125rem', marginBottom: '1rem' }}>{t("dashboard.revenueVsProfit")}</h2>
           {sales.length > 0 ? (
             <ChartComponent type="line" data={chartData} />
           ) : (
             <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
-              Not enough data to display chart
+              {t("dashboard.notEnoughData")}
             </div>
           )}
         </div>
 
         <div className="card" style={{ padding: '1.5rem' }}>
-          <h2 style={{ fontSize: '1.125rem', marginBottom: '1rem' }}>Quick Summary</h2>
+          <h2 style={{ fontSize: '1.125rem', marginBottom: '1rem' }}>{t("dashboard.quickSummary")}</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '1rem', borderBottom: '1px solid var(--border-color)' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>Weekly Profit</span>
+              <span style={{ color: 'var(--text-secondary)' }}>{t("dashboard.weeklyProfit")}</span>
               <span style={{ fontWeight: '600' }}>{stats.weeklyProfit.toLocaleString()} Birr</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '1rem', borderBottom: '1px solid var(--border-color)' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>Monthly Profit</span>
+              <span style={{ color: 'var(--text-secondary)' }}>{t("dashboard.monthlyProfit")}</span>
               <span style={{ fontWeight: '600' }}>{stats.monthlyProfit.toLocaleString()} Birr</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '1rem', borderBottom: '1px solid var(--border-color)' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>Total Sales Transactions</span>
+              <span style={{ color: 'var(--text-secondary)' }}>{t("dashboard.totalSales")}</span>
               <span style={{ fontWeight: '600' }}>{stats.totalSalesCount}</span>
             </div>
           </div>

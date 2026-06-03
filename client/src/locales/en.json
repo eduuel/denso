@@ -1,0 +1,80 @@
+{
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "products": "Products",
+    "salesHistory": "Sales History",
+    "users": "Users",
+    "logout": "Logout"
+  },
+  "dashboard": {
+    "overview": "Dashboard Overview",
+    "totalProfit": "Total Profit (All Time)",
+    "todayProfit": "Today's Profit",
+    "totalProducts": "Total Products",
+    "lowStock": "Low Stock Alerts",
+    "requiresAttention": "Requires attention",
+    "healthy": "All stock healthy",
+    "revenueVsProfit": "Revenue vs Profit (Last 7 Days)",
+    "quickSummary": "Quick Summary",
+    "weeklyProfit": "Weekly Profit",
+    "monthlyProfit": "Monthly Profit",
+    "totalSales": "Total Sales Transactions",
+    "notEnoughData": "Not enough data to display chart"
+  },
+  "products": {
+    "title": "Inventory Products",
+    "addProduct": "Add New Product",
+    "search": "Search products...",
+    "allCategories": "All Categories",
+    "name": "Product Name",
+    "category": "Category",
+    "price": "Price",
+    "quantity": "Quantity",
+    "status": "Status",
+    "actions": "Actions",
+    "inStock": "In Stock",
+    "lowStock": "Low Stock",
+    "outOfStock": "Out of Stock",
+    "edit": "Edit",
+    "sell": "Sell",
+    "delete": "Delete",
+    "noProducts": "No products found. Adjust your search or add a new product.",
+    "addSuccess": "Product added successfully",
+    "editSuccess": "Product updated successfully",
+    "deleteSuccess": "Product deleted successfully"
+  },
+  "sales": {
+    "title": "Sales History",
+    "dateRange": "Date Range: All Time",
+    "today": "Today",
+    "last7Days": "Last 7 Days",
+    "last30Days": "Last 30 Days",
+    "product": "Product",
+    "soldTo": "Sold To",
+    "qty": "Qty",
+    "amount": "Total Amount",
+    "profit": "Profit",
+    "date": "Date",
+    "noSales": "No sales records found.",
+    "cashier": "Cashier"
+  },
+  "users": {
+    "title": "User Management",
+    "refresh": "Refresh",
+    "user": "User",
+    "role": "Role",
+    "joined": "Joined",
+    "actions": "Actions",
+    "promote": "Promote",
+    "demote": "Demote",
+    "delete": "Delete",
+    "cannotDeleteSelf": "Cannot delete self",
+    "noUsers": "No users found.",
+    "accessDenied": "Access Denied",
+    "adminRequired": "Admin privileges required to view this page."
+  },
+  "navbar": {
+    "admin": "Administrator",
+    "viewOnly": "View Only"
+  }
+}
