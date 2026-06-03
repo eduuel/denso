@@ -23,11 +23,11 @@ app.use(express.json());
 const authRoutes = require("./routes/authRoutes");
 const productRoutes = require("./routes/productRoutes");
 const saleRoutes = require("./routes/saleRoutes");
-
+const userRoutes = require("./routes/userRoutes");
 app.use("/api", authRoutes);
 app.use("/api", productRoutes);
 app.use("/api", saleRoutes);
-
+app.use("/api/users", userRoutes);
 // =========================
 // MONGODB CONNECTION
 // =========================

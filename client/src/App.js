@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import axios from "axios";
 import { API } from "./config";
 import "./App.css";
-
+import Users from "./pages/Users";
 // Layout & Pages
 import Layout from "./components/Layout";
 import Login from "./pages/Login";
@@ -168,6 +168,7 @@ function App() {
             } 
           />
           <Route path="/sales" element={<SalesHistory sales={sales} />} />
+          <Route path="/users" element={<Users token={token} role={role} />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
