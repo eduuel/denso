@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import DataTable from '../components/DataTable';
 import ProductModal from '../components/ProductModal';
+import SellModal from '../components/SellModal';
 import { Search, Plus, Edit2, Trash2, ShoppingBag } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -13,6 +14,10 @@ const Products = ({ products = [], role, onAdd, onEdit, onDelete, onSell }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState('add'); // 'add' | 'edit'
   const [editingProduct, setEditingProduct] = useState(null);
+  
+  // Sell Modal State
+  const [isSellModalOpen, setIsSellModalOpen] = useState(false);
+  const [productToSell, setProductToSell] = useState(null);
 
   // ============================
   // 🔍 FILTER & SEARCH LOGIC
@@ -61,19 +66,9 @@ const Products = ({ products = [], role, onAdd, onEdit, onDelete, onSell }) => {
   // ============================
   // 🛒 SELL HANDLER
   // ============================
-  const handleSellClick = (id) => {
-    const customerName = prompt("Customer Name:");
-    if (!customerName) return;
-    const quantitySold = prompt("Quantity:");
-    if (!quantitySold) return;
-    const sellingPrice = prompt("Price per item:");
-    if (!sellingPrice) return;
-
-    onSell(id, {
-      customerName,
-      quantitySold: Number(quantitySold),
-      sellingPrice: Number(sellingPrice)
-    });
+  const handleSellClick = (row) => {
+    setProductToSell(row);
+    setIsSellModalOpen(true);
   };
 
   // ============================
@@ -111,7 +106,7 @@ const Products = ({ products = [], role, onAdd, onEdit, onDelete, onSell }) => {
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           {role === 'admin' ? (
             <>
-              <button className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }} onClick={() => handleSellClick(row._id)} title={t("products.sell")}>
+              <button className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }} onClick={() => handleSellClick(row)} title={t("products.sell")}>
                 <ShoppingBag size={16} />
               </button>
               <button className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }} onClick={() => handleOpenEdit(row)} title={t("products.edit")}>
@@ -184,6 +179,17 @@ const Products = ({ products = [], role, onAdd, onEdit, onDelete, onSell }) => {
         onSave={handleSaveModal}
         initialData={editingProduct}
         mode={modalMode}
+      />
+
+      {/* 🛒 SELL MODAL */}
+      <SellModal
+        isOpen={isSellModalOpen}
+        onClose={() => setIsSellModalOpen(false)}
+        onSave={(id, sellData) => {
+          onSell(id, sellData);
+          setIsSellModalOpen(false);
+        }}
+        product={productToSell}
       />
     </div>
   );

@@ -94,9 +94,7 @@ function App() {
   };
 
   const handleRegister = (email, password) => {
-    axios.post(`${API}/api/register`, { email, password })
-      .then(() => alert("User registered successfully. You can now log in."))
-      .catch(err => alert(err.response?.data?.message || "Registration failed"));
+    return axios.post(`${API}/api/register`, { email, password });
   };
 
   // ============================
