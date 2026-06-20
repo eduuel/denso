@@ -24,10 +24,12 @@ const authRoutes = require("./routes/authRoutes");
 const productRoutes = require("./routes/productRoutes");
 const saleRoutes = require("./routes/saleRoutes");
 const userRoutes = require("./routes/userRoutes");
+const activityRoutes = require("./routes/activityRoutes");
 app.use("/api", authRoutes);
 app.use("/api", productRoutes);
 app.use("/api", saleRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api", activityRoutes);
 // =========================
 // MONGODB CONNECTION
 // =========================

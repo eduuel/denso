@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const { logActivity } = require("./activityController");
 
 // ============================
 // 🟢 REGISTER
@@ -39,6 +40,8 @@ exports.register = async (req, res) => {
     });
 
     await user.save();
+
+    await logActivity(email, "REGISTER", `New user registered as ${role}`);
 
     res.status(201).json({ message: "User created successfully" });
   } catch (err) {
@@ -87,6 +90,8 @@ exports.login = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "12h" } // More secure expiration
     );
+
+    await logActivity(user.email, "LOGIN", "User logged into the system");
 
     res.json({ token, role });
   } catch (err) {

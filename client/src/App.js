@@ -17,7 +17,13 @@ import InvoiceModal from "./components/InvoiceModal";
 
 function App() {
   // 🔐 AUTH STATE
-  const [token, setToken] = useState(localStorage.getItem("token") || "");
+  const [token, setToken] = useState(() => {
+    try {
+      return localStorage.getItem("token") || "";
+    } catch (e) {
+      return "";
+    }
+  });
   const [role, setRole] = useState("");
   const [userEmail, setUserEmail] = useState(""); // Optionally extract from token
 
@@ -34,8 +40,8 @@ function App() {
     if (token) {
       try {
         const payload = JSON.parse(atob(token.split(".")[1]));
-        setRole(payload.role);
-        setUserEmail(payload.email);
+        setRole(payload?.role || "");
+        setUserEmail(payload?.email || "");
       } catch (err) {
         setRole("");
         setUserEmail("");
@@ -81,7 +87,7 @@ function App() {
   const handleLogin = (email, password) => {
     axios.post(`${API}/api/login`, { email, password })
       .then(res => {
-        localStorage.setItem("token", res.data.token);
+        try { localStorage.setItem("token", res.data.token); } catch(e) {}
         setToken(res.data.token);
       })
       .catch(err => alert(err.response?.data?.message || "Login failed"));
@@ -97,7 +103,7 @@ function App() {
   // 🚪 LOGOUT
   // ============================
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    try { localStorage.removeItem("token"); } catch(e) {}
     setToken("");
     setRole("");
     setUserEmail("");
@@ -107,7 +113,19 @@ function App() {
   // ➕/🗑 PRODUCT ACTIONS
   // ============================
   const addProduct = (productData) => {
-    axios.post(`${API}/api/products`, productData, { headers: { Authorization: `Bearer ${token}` } })
+    let payload = productData;
+    let headers = { Authorization: `Bearer ${token}` };
+
+    if (productData.image) {
+      payload = new FormData();
+      payload.append("name", productData.name);
+      payload.append("price", productData.price);
+      payload.append("quantity", productData.quantity);
+      payload.append("image", productData.image);
+      headers["Content-Type"] = "multipart/form-data";
+    }
+
+    axios.post(`${API}/api/products`, payload, { headers })
       .then(() => loadProducts())
       .catch(err => console.log(err));
   };
@@ -119,7 +137,19 @@ function App() {
   };
 
   const editProduct = (id, productData) => {
-    axios.put(`${API}/api/products/${id}`, productData, { headers: { Authorization: `Bearer ${token}` } })
+    let payload = productData;
+    let headers = { Authorization: `Bearer ${token}` };
+
+    if (productData.image) {
+      payload = new FormData();
+      if (productData.name) payload.append("name", productData.name);
+      if (productData.price !== undefined) payload.append("price", productData.price);
+      if (productData.quantity !== undefined) payload.append("quantity", productData.quantity);
+      payload.append("image", productData.image);
+      headers["Content-Type"] = "multipart/form-data";
+    }
+
+    axios.put(`${API}/api/products/${id}`, payload, { headers })
       .then(() => loadProducts())
       .catch(err => console.log(err));
   };

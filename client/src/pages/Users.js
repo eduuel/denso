@@ -191,9 +191,9 @@ const Users = ({ token, role: currentUserRole }) => {
                     <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
                       <div style={{
                         ...styles.tableAvatar,
-                        backgroundColor: user.role === "admin" ? "var(--primary-color)" : "var(--text-muted)"
+                        backgroundColor: (user.role || "") === "admin" ? "var(--primary-color)" : "var(--text-muted)"
                       }}>
-                        {user.email.charAt(0).toUpperCase()}
+                        {(user.email || "U").charAt(0).toUpperCase()}
                       </div>
                       <div>
                         <div style={{ fontWeight: 500, color: "var(--text-primary)" }}>
@@ -211,11 +211,11 @@ const Users = ({ token, role: currentUserRole }) => {
                   <td style={styles.td}>
                     <span style={{
                       ...styles.roleBadge,
-                      backgroundColor: user.role === "admin" ? "rgba(99, 102, 241, 0.15)" : "rgba(107, 114, 128, 0.15)",
-                      color: user.role === "admin" ? "var(--primary-color)" : "var(--text-secondary)"
+                      backgroundColor: (user.role || "") === "admin" ? "rgba(99, 102, 241, 0.15)" : "rgba(107, 114, 128, 0.15)",
+                      color: (user.role || "") === "admin" ? "var(--primary-color)" : "var(--text-secondary)"
                     }}>
-                      {user.role === "admin" ? <Shield size={14} /> : <ShieldOff size={14} />}
-                      {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                      {(user.role || "") === "admin" ? <Shield size={14} /> : <ShieldOff size={14} />}
+                      {(user.role || "user").charAt(0).toUpperCase() + (user.role || "user").slice(1)}
                     </span>
                   </td>
 

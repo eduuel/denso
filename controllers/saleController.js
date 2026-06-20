@@ -1,5 +1,6 @@
 const Sale = require("../models/Sale");
 const Product = require("../models/Product");
+const { logActivity } = require("./activityController");
 
 // =========================
 // 💸 RECORD A SALE
@@ -42,6 +43,8 @@ exports.createSale = async (req, res) => {
       totalAmount,
       profit
     });
+
+    await logActivity(req.user?.email || "Unknown User", "SELL_PRODUCT", `Sold ${quantitySold}x ${product.name} for ${totalAmount} Birr`);
 
     res.status(201).json({ message: "Sale recorded", sale });
 

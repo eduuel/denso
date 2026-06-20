@@ -1,4 +1,5 @@
 const Product = require("../models/Product");
+const { cloudinary } = require("../middleware/uploadMiddleware");
 
 // ============================
 // ➕ ADD PRODUCT
@@ -19,7 +20,9 @@ exports.addProduct = async (req, res) => {
     const product = await Product.create({
       name: name.trim(),
       price: Number(price),
-      quantity: Number(quantity)
+      quantity: Number(quantity),
+      imageUrl: req.file ? req.file.path : null,
+      imageId: req.file ? req.file.filename : null
     });
 
     res.status(201).json({ message: "Product added", product });
@@ -55,13 +58,31 @@ exports.updateProduct = async (req, res) => {
       return res.status(400).json({ error: "Quantity cannot be negative" });
     }
 
+    // Prepare update object
+    const updateData = {
+      name: name ? name.trim() : undefined, 
+      price: price !== undefined ? Number(price) : undefined, 
+      quantity: quantity !== undefined ? Number(quantity) : undefined 
+    };
+
+    // Clean up undefined fields
+    Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
+
+    // Handle new image upload
+    if (req.file) {
+      // Find old product to delete old image
+      const oldProduct = await Product.findById(req.params.id);
+      if (oldProduct && oldProduct.imageId) {
+        await cloudinary.uploader.destroy(oldProduct.imageId);
+      }
+      
+      updateData.imageUrl = req.file.path;
+      updateData.imageId = req.file.filename;
+    }
+
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
-      { 
-        name: name ? name.trim() : undefined, 
-        price: price !== undefined ? Number(price) : undefined, 
-        quantity: quantity !== undefined ? Number(quantity) : undefined 
-      },
+      updateData,
       { new: true, runValidators: true }
     );
 
@@ -84,6 +105,11 @@ exports.deleteProduct = async (req, res) => {
 
     if (!deletedProduct) {
       return res.status(404).json({ error: "Product not found" });
+    }
+
+    // Delete image from Cloudinary if it exists
+    if (deletedProduct.imageId) {
+      await cloudinary.uploader.destroy(deletedProduct.imageId);
     }
 
     res.json({ message: "Product deleted" });

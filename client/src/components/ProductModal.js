@@ -5,6 +5,7 @@ const ProductModal = ({ isOpen, onClose, onSave, initialData, mode = 'add' }) =>
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [quantity, setQuantity] = useState('');
+  const [image, setImage] = useState(null);
 
   // Populate data when modal opens or initialData changes
   useEffect(() => {
@@ -12,10 +13,12 @@ const ProductModal = ({ isOpen, onClose, onSave, initialData, mode = 'add' }) =>
       setName(initialData.name || '');
       setPrice(initialData.price || '');
       setQuantity(initialData.quantity || '');
+      setImage(null); // don't pre-fill file input
     } else if (isOpen && !initialData) {
       setName('');
       setPrice('');
       setQuantity('');
+      setImage(null);
     }
   }, [isOpen, initialData]);
 
@@ -28,7 +31,8 @@ const ProductModal = ({ isOpen, onClose, onSave, initialData, mode = 'add' }) =>
     onSave({
       name,
       price: Number(price),
-      quantity: Number(quantity)
+      quantity: Number(quantity),
+      image
     });
   };
 
@@ -83,6 +87,22 @@ const ProductModal = ({ isOpen, onClose, onSave, initialData, mode = 'add' }) =>
               style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
               required
             />
+          </div>
+
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Product Image (Optional)</label>
+            <input 
+              type="file" 
+              accept="image/*"
+              onChange={e => setImage(e.target.files[0])}
+              style={{ width: '100%', padding: '0.5rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
+            />
+            {mode === 'edit' && initialData?.imageUrl && (
+              <div style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                Current image: <a href={initialData.imageUrl} target="_blank" rel="noreferrer" style={{ color: 'var(--primary-color)' }}>View</a>
+                <br/>Uploading a new image will replace the current one.
+              </div>
+            )}
           </div>
 
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>

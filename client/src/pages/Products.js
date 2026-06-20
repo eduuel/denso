@@ -20,7 +20,7 @@ const Products = ({ products = [], role, onAdd, onEdit, onDelete, onSell }) => {
   const filteredProducts = useMemo(() => {
     return products.filter(product => {
       // 1. Search filter
-      const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = (product.name || "").toLowerCase().includes(searchTerm.toLowerCase());
       
       // 2. Type filter
       let matchesType = true;
@@ -80,6 +80,15 @@ const Products = ({ products = [], role, onAdd, onEdit, onDelete, onSell }) => {
   // 📊 TABLE COLUMNS
   // ============================
   const columns = [
+    { 
+      field: 'imageUrl', 
+      header: 'Image',
+      render: (row) => row.imageUrl ? (
+        <img src={row.imageUrl} alt={row.name} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} />
+      ) : (
+        <div style={{ width: '40px', height: '40px', backgroundColor: 'var(--bg-tertiary)', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '0.6rem' }}>No Img</div>
+      )
+    },
     { field: 'name', header: t("products.name") },
     { 
       field: 'price', 

@@ -27,7 +27,7 @@ const SalesHistory = ({ sales = [] }) => {
 
     result = result.filter(sale => {
       // 1. Search filter (by product name)
-      const matchesSearch = sale.productName?.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = (sale.productName || "").toLowerCase().includes(searchTerm.toLowerCase());
       
       // 2. Date filter
       let matchesDate = true;
