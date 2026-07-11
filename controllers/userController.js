@@ -24,15 +24,25 @@ exports.updateUserRole = async (req, res) => {
   }
 
   try {
+    const currentUser = await User.findById(req.user.id);
+    if (!currentUser || !currentUser.isPrimaryAdmin) {
+      return res.status(403).json({ error: "Only the Primary Admin can change roles" });
+    }
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (user.isPrimaryAdmin) {
+      return res.status(403).json({ error: "Primary admin cannot be modified." });
+    }
+
     const updatedUser = await User.findByIdAndUpdate(
       id,
       { role },
       { new: true }
     ).select("-password");
-
-    if (!updatedUser) {
-      return res.status(404).json({ error: "User not found" });
-    }
 
     res.json(updatedUser);
   } catch (err) {
@@ -53,11 +63,21 @@ exports.deleteUser = async (req, res) => {
   }
 
   try {
-    const deletedUser = await User.findByIdAndDelete(id);
+    const currentUser = await User.findById(req.user.id);
+    if (!currentUser || !currentUser.isPrimaryAdmin) {
+      return res.status(403).json({ error: "Only the Primary Admin can delete users" });
+    }
 
-    if (!deletedUser) {
+    const user = await User.findById(id);
+    if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
+
+    if (user.isPrimaryAdmin) {
+      return res.status(403).json({ error: "Primary admin cannot be modified." });
+    }
+
+    await User.findByIdAndDelete(id);
 
     res.json({ message: "User deleted successfully" });
   } catch (err) {

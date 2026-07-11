@@ -32,11 +32,13 @@ exports.register = async (req, res) => {
     // First user created becomes admin by default for easy setup
     const userCount = await User.countDocuments();
     const role = userCount === 0 ? "admin" : "user";
+    const isPrimaryAdmin = userCount === 0 ? true : false;
 
     const user = new User({
       email,
       password: hashed,
-      role
+      role,
+      isPrimaryAdmin
     });
 
     await user.save();
@@ -85,7 +87,8 @@ exports.login = async (req, res) => {
       {
         id: user._id,
         email: user.email,
-        role: role
+        role: role,
+        isPrimaryAdmin: user.isPrimaryAdmin || false
       },
       process.env.JWT_SECRET,
       { expiresIn: "12h" } // More secure expiration

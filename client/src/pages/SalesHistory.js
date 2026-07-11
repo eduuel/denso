@@ -69,6 +69,11 @@ const SalesHistory = ({ sales = [] }) => {
       render: (row) => getDate(row).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
     },
     { field: 'productName', header: t("sales.product") },
+    { 
+      field: 'customer', 
+      header: 'Customer',
+      render: (row) => row.customerName || (row.customerId && row.customerId.name) || "Guest"
+    },
     { field: 'quantitySold', header: t("sales.qty") },
     { 
       field: 'sellingPrice', 
@@ -81,6 +86,25 @@ const SalesHistory = ({ sales = [] }) => {
       render: (row) => {
         const total = Number(row.totalAmount || (row.quantitySold * row.sellingPrice) || 0);
         return <span style={{ fontWeight: '500' }}>{total.toLocaleString()} Birr</span>;
+      }
+    },
+    { 
+      field: 'paymentMethod', 
+      header: 'Payment',
+      render: (row) => {
+        const method = row.paymentMethod || "Paid";
+        let color = "var(--success-color)";
+        if (method === "Credit") color = "var(--danger-color)";
+        if (method === "Partial Payment") color = "var(--warning-color)";
+        
+        return (
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <span style={{ color, fontWeight: '600', fontSize: '0.8rem' }}>{method}</span>
+            {method !== "Paid" && row.balanceAmount > 0 && (
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Bal: {row.balanceAmount.toLocaleString()} Birr</span>
+            )}
+          </div>
+        );
       }
     },
     { 

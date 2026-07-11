@@ -6,7 +6,8 @@ import {
   Package,
   ShoppingCart,
   LogOut,
-  Users
+  Users,
+  Briefcase
 } from "lucide-react";
 
 const Sidebar = ({ role, onLogout }) => {
@@ -48,6 +49,16 @@ const Sidebar = ({ role, onLogout }) => {
         >
           <ShoppingCart className="nav-icon" />
           <span>{t("sidebar.salesHistory")}</span>
+        </NavLink>
+
+        <NavLink
+          to="/customers"
+          className={({ isActive }) =>
+            `nav-item ${isActive ? "active" : ""}`
+          }
+        >
+          <Briefcase className="nav-icon" />
+          <span>{t("sidebar.customers")}</span>
         </NavLink>
 
         {/* ADMIN ONLY */}

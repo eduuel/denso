@@ -12,17 +12,25 @@ const Users = ({ token, role: currentUserRole }) => {
   const [actionLoading, setActionLoading] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
-  // Get current user ID from JWT
-  const getCurrentUserId = () => {
+  const getUserDetails = () => {
     try {
       const payload = JSON.parse(atob(token.split(".")[1]));
-      return payload.id;
+      return payload;
     } catch {
       return null;
     }
   };
 
-  const currentUserId = getCurrentUserId();
+  const userDetails = getUserDetails();
+  const currentUserId = userDetails?.id;
+
+  // Read isPrimaryAdmin from the live DB response (users list) so it is
+  // always accurate even if the JWT was issued before the field was added.
+  // Falls back to the JWT value for the moment before users are loaded.
+  const isCurrentUserPrimaryAdmin =
+    users.length > 0
+      ? !!(users.find(u => u._id === currentUserId)?.isPrimaryAdmin)
+      : !!(userDetails?.isPrimaryAdmin);
 
   // ============================
   // 📦 FETCH ALL USERS
@@ -209,14 +217,21 @@ const Users = ({ token, role: currentUserRole }) => {
 
                   {/* Role Badge */}
                   <td style={styles.td}>
-                    <span style={{
-                      ...styles.roleBadge,
-                      backgroundColor: (user.role || "") === "admin" ? "rgba(99, 102, 241, 0.15)" : "rgba(107, 114, 128, 0.15)",
-                      color: (user.role || "") === "admin" ? "var(--primary-color)" : "var(--text-secondary)"
-                    }}>
-                      {(user.role || "") === "admin" ? <Shield size={14} /> : <ShieldOff size={14} />}
-                      {(user.role || "user").charAt(0).toUpperCase() + (user.role || "user").slice(1)}
-                    </span>
+                    <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                      <span style={{
+                        ...styles.roleBadge,
+                        backgroundColor: (user.role || "") === "admin" ? "rgba(99, 102, 241, 0.15)" : "rgba(107, 114, 128, 0.15)",
+                        color: (user.role || "") === "admin" ? "var(--primary-color)" : "var(--text-secondary)"
+                      }}>
+                        {(user.role || "") === "admin" ? <Shield size={14} /> : <ShieldOff size={14} />}
+                        {(user.role || "user").charAt(0).toUpperCase() + (user.role || "user").slice(1)}
+                      </span>
+                      {user.isPrimaryAdmin && (
+                        <span style={{ fontSize: "0.7rem", color: "var(--primary-color)", fontWeight: "bold", border: "1px solid var(--primary-color)", borderRadius: "4px", padding: "2px 4px" }}>
+                          Primary
+                        </span>
+                      )}
+                    </div>
                   </td>
 
                   {/* Joined Date */}
@@ -231,31 +246,33 @@ const Users = ({ token, role: currentUserRole }) => {
                   {/* Actions */}
                   <td style={{ ...styles.td, textAlign: "right" }}>
                     <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end" }}>
-                      {/* Promote/Demote Button */}
-                      <button
-                        onClick={() => handleToggleRole(user._id, user.role)}
-                        disabled={isBeingActioned}
-                        className="btn btn-outline"
-                        style={{ fontSize: "0.8rem", padding: "0.4rem 0.75rem" }}
-                        title={user.role === "admin" ? t("users.demote") : t("users.promote")}
-                      >
-                        {user.role === "admin" ? <ShieldOff size={14} /> : <Shield size={14} />}
-                        {user.role === "admin" ? t("users.demote") : t("users.promote")}
-                      </button>
+                       {/* Promote/Demote Button (only for primary admin) */}
+                       {isCurrentUserPrimaryAdmin && (
+                         <button
+                           onClick={() => handleToggleRole(user._id, user.role)}
+                           disabled={isBeingActioned}
+                           className="btn btn-outline"
+                           style={{ fontSize: "0.8rem", padding: "0.4rem 0.75rem" }}
+                           title={user.role === "admin" ? t("users.demote") : t("users.promote")}
+                         >
+                           {user.role === "admin" ? <ShieldOff size={14} /> : <Shield size={14} />}
+                           {user.role === "admin" ? t("users.demote") : t("users.promote")}
+                         </button>
+                       )}
 
-                      {/* Delete Button — hidden for current user */}
-                      {!isCurrentUser && (
-                        <button
-                          onClick={() => handleDeleteUser(user._id, user.email)}
-                          disabled={isBeingActioned}
-                          className="btn btn-danger"
-                          style={{ fontSize: "0.8rem", padding: "0.4rem 0.75rem" }}
-                          title={t("users.delete")}
-                        >
-                          <Trash2 size={14} />
-                          {t("users.delete")}
-                        </button>
-                      )}
+                       {/* Delete Button (only for primary admin) */}
+                       {isCurrentUserPrimaryAdmin && (
+                         <button
+                           onClick={() => handleDeleteUser(user._id, user.email)}
+                           disabled={isBeingActioned || isCurrentUser || user.isPrimaryAdmin}
+                           className="btn btn-danger"
+                           style={{ fontSize: "0.8rem", padding: "0.4rem 0.75rem" }}
+                           title={t("users.delete")}
+                         >
+                           <Trash2 size={14} />
+                           {t("users.delete")}
+                         </button>
+                       )}
 
                       {/* Self indicator */}
                       {isCurrentUser && (

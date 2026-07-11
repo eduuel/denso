@@ -10,6 +10,8 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
 import SalesHistory from "./pages/SalesHistory";
+import Customers from "./pages/Customers";
+import CustomerDetails from "./pages/CustomerDetails";
 import InvoiceModal from "./components/InvoiceModal";
 
 // NOTE: getDate was previously defined but is no longer used. Keeping it for potential future utilities.
@@ -196,6 +198,8 @@ function App() {
             } 
           />
           <Route path="/sales" element={<SalesHistory sales={sales} />} />
+          <Route path="/customers" element={<Customers token={token} role={role} />} />
+          <Route path="/customers/:id" element={<CustomerDetails token={token} />} />
           <Route path="/users" element={<Users token={token} role={role} />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

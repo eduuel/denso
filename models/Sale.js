@@ -7,6 +7,35 @@ const saleSchema = new mongoose.Schema({
     required: true
   },
 
+  customerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Customer",
+    default: null
+  },
+
+  customerName: {
+    type: String,
+    default: ""
+  },
+
+  paymentMethod: {
+    type: String,
+    enum: ["Paid", "Partial Payment", "Credit"],
+    default: "Paid"
+  },
+
+  amountPaid: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+
+  balanceAmount: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+
   productName: {
     type: String,
     required: true,
